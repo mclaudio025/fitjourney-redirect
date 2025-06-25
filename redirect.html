@@ -48,17 +48,32 @@
     .btn:hover {
       background: #388e3c;
     }
+    .info {
+      margin-top: 16px;
+      color: #888;
+      font-size: 14px;
+    }
   </style>
   <script>
+    function isMobile() {
+      return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+    }
+
     window.onload = function() {
       const params = new URLSearchParams(window.location.search);
       const token = params.get('token') || params.get('code');
+      const deepLink = `fitjourney://reset-password?access_token=${token}`;
       if (token) {
-        setTimeout(() => {
-          window.location.href = `fitjourney://reset-password?access_token=${token}`;
-        }, 1500); // Pequeno delay para o usuário ver a mensagem
         document.getElementById('manual-btn').onclick = function() {
-          window.location.href = `fitjourney://reset-password?access_token=${token}`;
+          window.location.href = deepLink;
+        }
+        if (isMobile()) {
+          setTimeout(() => {
+            window.location.href = deepLink;
+          }, 1200);
+        } else {
+          document.getElementById('spinner').style.display = 'none';
+          document.getElementById('info').style.display = 'block';
         }
       } else {
         document.getElementById('msg').innerHTML = "<b>Token inválido ou ausente.</b><br>Por favor, solicite um novo link de recuperação.";
@@ -76,6 +91,9 @@
     </div>
     <div id="spinner" class="spinner"></div>
     <button id="manual-btn" class="btn">Abrir o app FitJourney</button>
+    <div id="info" class="info" style="display:none;">
+      <p>Se você estiver no computador, este botão só funciona no celular com o app instalado.</p>
+    </div>
   </div>
 </body>
 </html>
