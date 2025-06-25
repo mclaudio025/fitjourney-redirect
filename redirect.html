@@ -6,10 +6,8 @@
   <script>
     window.onload = function() {
       const params = new URLSearchParams(window.location.search);
-      const token = params.get('token');
-      const type = params.get('type');
-      if (token && type === 'recovery') {
-        // Redireciona para o deep link do app com o token
+      const token = params.get('token') || params.get('code');
+      if (token) {
         window.location.href = `fitjourney://reset-password?access_token=${token}`;
       } else {
         document.body.innerHTML = '<h2>Token inválido ou ausente.</h2>';
