@@ -3,19 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <title>Redirecionando para o app...</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f7f7f7;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 32px 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    .spinner {
+      margin: 24px auto;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #eee;
+      border-top: 4px solid #4CAF50;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 10px 24px;
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #388e3c;
+    }
+  </style>
   <script>
     window.onload = function() {
       const params = new URLSearchParams(window.location.search);
       const token = params.get('token') || params.get('code');
       if (token) {
-        window.location.href = `fitjourney://reset-password?access_token=${token}`;
+        setTimeout(() => {
+          window.location.href = `fitjourney://reset-password?access_token=${token}`;
+        }, 1500); // Pequeno delay para o usuário ver a mensagem
+        document.getElementById('manual-btn').onclick = function() {
+          window.location.href = `fitjourney://reset-password?access_token=${token}`;
+        }
       } else {
-        document.body.innerHTML = '<h2>Token inválido ou ausente.</h2>';
+        document.getElementById('msg').innerHTML = "<b>Token inválido ou ausente.</b><br>Por favor, solicite um novo link de recuperação.";
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('manual-btn').style.display = 'none';
       }
     }
   </script>
 </head>
 <body>
-  <h2>Redirecionando para o app...</h2>
+  <div class="container">
+    <div id="msg">
+      <h2>Redirecionando para o app FitJourney...</h2>
+      <p>Se não for redirecionado automaticamente, clique no botão abaixo.</p>
+    </div>
+    <div id="spinner" class="spinner"></div>
+    <button id="manual-btn" class="btn">Abrir o app FitJourney</button>
+  </div>
 </body>
 </html>
