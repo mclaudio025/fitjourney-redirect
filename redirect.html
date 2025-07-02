@@ -53,12 +53,39 @@
       color: #888;
       font-size: 14px;
     }
+    .debug {
+      margin-top: 20px;
+      color: #b71c1c;
+      font-size: 12px;
+      word-break: break-all;
+      background: #fbe9e7;
+      padding: 8px;
+      border-radius: 6px;
+      display: none;
+    }
   </style>
   <script>
+    function isMobile() {
+      return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+    }
+
     window.onload = function() {
+      // Debug logs
+      function debugLog(msg) {
+        const debugDiv = document.getElementById('debug');
+        debugDiv.style.display = 'block';
+        debugDiv.innerHTML += msg + '<br>';
+        console.log(msg);
+      }
+
+      debugLog('URL completa: ' + window.location.href);
+      debugLog('Hash: ' + window.location.hash);
+      debugLog('Search: ' + window.location.search);
+
       // Se os parâmetros vierem na hash, converte para query string e recarrega
       if (window.location.hash && window.location.hash.startsWith('#')) {
         const hashParams = window.location.hash.substring(1); // remove o '#'
+        debugLog('Convertendo hash para query: ' + hashParams);
         const newUrl = window.location.origin + window.location.pathname + '?' + hashParams;
         window.location.replace(newUrl);
         return;
@@ -69,12 +96,13 @@
       const token = params.get('access_token') || params.get('token') || params.get('token_hash') || params.get('code');
       const type = params.get('type');
 
-      function isMobile() {
-        return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
-      }
+      debugLog('Token extraído: ' + token);
+      debugLog('Type extraído: ' + type);
 
       if (token && (type === 'recovery' || !type)) {
         const deepLink = `fitjourney://reset-password?access_token=${token}${type ? `&type=${type}` : ''}`;
+        debugLog('Deep link gerado: ' + deepLink);
+
         document.getElementById('manual-btn').onclick = function() {
           window.location.href = deepLink;
         }
@@ -90,6 +118,7 @@
         document.getElementById('msg').innerHTML = "<b>Token inválido ou ausente.</b><br>Por favor, solicite um novo link de recuperação.";
         document.getElementById('spinner').style.display = 'none';
         document.getElementById('manual-btn').style.display = 'none';
+        debugLog('Token não encontrado ou inválido.');
       }
     }
   </script>
@@ -105,6 +134,7 @@
     <div id="info" class="info" style="display:none;">
       <p>Se você estiver no computador, este botão só funciona no celular com o app instalado.</p>
     </div>
+    <div id="debug" class="debug"></div>
   </div>
 </body>
 </html>
